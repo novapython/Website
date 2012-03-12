@@ -1,0 +1,197 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>NOVA Python</title>
+	<meta name="description" content="NovaPy Users Group">
+	<meta name="author" content="Ryan Day">
+
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/1140.css">
+
+	<script src="js/raphael-min.js"></script>
+	<script src="js/popup.js"></script>
+	<script src="js/chart.js"></script>
+</head>
+<body>
+<header>
+</header>
+<div role="main" class="container">
+  <div class="row">
+    <div class="onecol">&nbsp;</div>
+  </div>
+  <div class="row">
+    <div class="threecol"></div>
+    <div class="sevencol last">
+      <p class="description">
+        The Northern Virginia Python User Group meets at the VMWare office
+        right off the Dulles Toll Road on the third Thursday of every month.
+        We cover a vast array of python related material, and our members
+        vary from beginning to advanced.
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="onecol">&nbsp;</div>
+  </div>
+  <div class="row">
+    <div class="fourcol">
+      <span class="title">NOVA Python</span>
+      <span>
+        <a href="http://www.twitter.com/NOVAPython"><img width="20" height="20" src="img/twitter.png"></a>
+      </span>
+      <span>
+        <a href="http://meetup.novapython.org/"><img width="20" height="20" src="img/meetup.png"></a>
+      </span>
+      <p>
+      VMWare<br />
+      5th Floor<br />
+      1902 Campus Commons Dr.<br />
+      Reston, VA 20190<br />
+      </p>
+    </div>
+    <div class="twocol">
+      <p>Upcoming Events</p>
+    </div>
+    <div id="events" class="fourcol last"></div>
+  </div>
+  <div class="row">
+    <div class="fourcol"></div>
+    <div class="threecol">
+      <p>RSVP / Attended Chart</p>
+    </div>
+    <div class="row">
+    <div class="fivecol"></div>
+      <div class="sixcol last">
+        <div id="rsvpchart" style="height:200px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="fourcol"></div>
+    <div class="threecol">
+      <p>Total Members Chart</p>
+    </div>
+    <div class="row">
+    <div class="fivecol"></div>
+      <div class="sixcol last">
+        <div id="totalchart" style="height:200px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="fourcol"></div>
+    <div class="threecol">
+      <p>New Member Joins Chart</p>
+    </div>
+    <div class="row">
+    <div class="fivecol"></div>
+      <div class="sixcol last">
+        <div id="memberchart" style="height:200px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+  window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
+</script>
+<script src="js/plugins.js"></script>
+<script src="js/script.js"></script>
+<script>
+    function getSortFn(field) {
+        return function(a, b) {
+                    return a[field] < b[field] ? -1 : (a[field] > b[field] ? 1 : 0);
+                }
+    }
+
+    $(document).ready(
+        function() {
+            $.getJSON('/meetup/events/1546792',
+                function(data) {
+                    $.each(data.results,
+                        function(i, e) {
+                            link = '<p><a href="' + e.event_url + '">' + e.name + ' (' + e.yes_rsvp_count + ' RSVPs)</a></p>';
+                            $('#events').append(link);
+                        });
+                });
+
+            $.getJSON('/meetup/members/1546792',
+                function(data) {
+                    var months = ['Jan','Feb','Mar','Apr','May','Jun',
+                                    'Jul','Aug','Sep','Oct','Nov','Dec'],
+                        labels = [],
+                        joins = [],
+                        dict = {},
+                        total = [],
+                        sorted = data.sort(getSortFn('joined'));
+
+                    $.each(sorted,
+                        function(i, e) {
+                            var d = new Date(e.joined);
+                            var key = months[d.getMonth()] + '/' + d.getFullYear();
+
+                            if( key in dict ) {
+                                dict[key] += 1;
+                            } else {
+                                dict[key] = 1;
+                            }
+                        });
+
+                    var running_total = 0;
+                    for(var i in dict) {
+                        running_total += dict[i];
+                        total.push(running_total);
+                        labels.push(i);
+                        joins.push(dict[i]);
+                    }
+
+                    console.log(total);
+
+                    opts = {'colors':['#366c9a'],
+                            'labelcolor':'#ffcc3e',
+                            'xlabel':labels,
+                            'dplabel':['Joins']};
+
+                    drawChart("memberchart", [joins], opts);
+
+                    opts = {'colors':['#366c9a'],
+                            'labelcolor':'#ffcc3e',
+                            'xlabel':labels,
+                            'dplabel':['Members']};
+                    drawChart("totalchart", [total], opts);
+                });
+                            
+            $.getJSON('/meetup/rsvp/1546792',
+                function(data) {
+                    var rsvp = [],
+                        attn = [],
+                        labels = [];
+                    $.each(data,
+                        function(i, e) {
+                            rsvp.push(e.rsvp);
+                            attn.push(e.attended);
+                            labels.push(e.name);
+                        });
+
+                    opts = {'colors':['#366c9a','#ffcc3e'],
+                            'xlabel':labels,
+                            'dplabel':['RSVP','Attended']};
+                    drawChart("rsvpchart", [rsvp, attn], opts);
+                });
+
+        });
+</script>
+</body>
+</html>
