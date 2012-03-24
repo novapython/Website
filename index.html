@@ -16,9 +16,9 @@
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/1140.css">
 
-	<script src="js/raphael-min.js"></script>
+<!--	<script src="js/raphael-min.js"></script>
 	<script src="js/popup.js"></script>
-	<script src="js/chart.js"></script>
+	<script src="js/chart.js"></script>-->
 </head>
 <body>
 <header>
@@ -109,11 +109,40 @@
 </script>
 <script src="js/plugins.js"></script>
 <script src="js/script.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
 <script>
     function getSortFn(field) {
         return function(a, b) {
                     return a[field] < b[field] ? -1 : (a[field] > b[field] ? 1 : 0);
                 }
+    }
+
+    function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+
+
+    function tooltipcb(event, pos, item) {
+        if (item) {
+            $("#tooltip").remove();
+            var x = item.datapoint[0].toFixed(2),
+            y = item.datapoint[1].toFixed(2);
+
+            showTooltip(item.pageX, item.pageY, y);
+        }
+        else {
+            $("#tooltip").remove();
+        }
     }
 
     $(document).ready(
@@ -141,54 +170,75 @@
                         function(i, e) {
                             var d = new Date(e.joined);
                             var key = months[d.getMonth()] + '/' + d.getFullYear();
+                            var month = new Date(d.getFullYear(), d.getMonth(), 1).getTime();
 
-                            if( key in dict ) {
-                                dict[key] += 1;
+                            if( month in dict ) {
+                                dict[month] += 1;
                             } else {
-                                dict[key] = 1;
+                                dict[month] = 1;
                             }
                         });
 
                     var running_total = 0;
                     for(var i in dict) {
                         running_total += dict[i];
-                        total.push(running_total);
+                        total.push([i, running_total]);
                         labels.push(i);
-                        joins.push(dict[i]);
+                        joins.push([i, dict[i]]);
                     }
 
-                    console.log(total);
+                    var opts = {
+                        series: {
+                            points: {show: true},
+                            lines: {show: true}
+                            },
+                        grid: {
+                            hoverable: true,
+                            },
+                        xaxis: {
+                            mode: "time",
+                            minTickSize: [1, "month"]
+                            }
+                    };
 
-                    opts = {'colors':['#366c9a'],
-                            'labelcolor':'#ffcc3e',
-                            'xlabel':labels,
-                            'dplabel':['Joins']};
+                    $.plot($('#memberchart'), [joins], opts);
+                    $.plot($('#totalchart'), [total], opts);
 
-                    drawChart("memberchart", [joins], opts);
+                    $("#memberchart").bind("plothover", tooltipcb);
+                    $("#totalchart").bind("plothover", tooltipcb);
+            });
 
-                    opts = {'colors':['#366c9a'],
-                            'labelcolor':'#ffcc3e',
-                            'xlabel':labels,
-                            'dplabel':['Members']};
-                    drawChart("totalchart", [total], opts);
-                });
-                            
             $.getJSON('/meetup/rsvp/1546792',
                 function(data) {
                     var rsvp = [],
                         attn = [],
-                        labels = [];
+                        labels = [],
+                        x=0;
                     $.each(data,
                         function(i, e) {
-                            rsvp.push(e.rsvp);
-                            attn.push(e.attended);
+                            rsvp.push([x,e.rsvp]);
+                            attn.push([x,e.attended]);
                             labels.push(e.name);
+                            x++;
                         });
 
-                    opts = {'colors':['#366c9a','#ffcc3e'],
-                            'xlabel':labels,
-                            'dplabel':['RSVP','Attended']};
-                    drawChart("rsvpchart", [rsvp, attn], opts);
+                    var opts = {
+                        series: {
+                            points: {show: true},
+                            lines: {show: true}
+                            },
+                        grid: {
+                            hoverable: true,
+                            },
+                        xaxis: {
+                            mode: "time",
+                            minTickSize: [1, "month"]
+                            }
+                    };
+
+                    $("#rsvpchart").bind("plothover", tooltipcb);
+                    $.plot($('#rsvpchart'), [{label:'RSVP', data: rsvp},
+                                             {label:'Attended', data: attn}], opts);
                 });
 
         });
