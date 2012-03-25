@@ -9,12 +9,15 @@ from novaconfig import apikey, logger
 class MeetupMembers(object):
     '''
         Returns a list of all members in your meetup
+
+        Members come and go fairly regularly, so this list
+        is updated every hour.
     '''
 
     def GET(self, cmd):
         logger.debug('GET /meetup/events/%s' % cmd)
         decoder = json.JSONDecoder()
-        meetup = MeetupAPI(apikey)
+        meetup = MeetupAPI(apikey, lifetime=3600)
         response = None
         meta = None
 
@@ -43,11 +46,14 @@ class MeetupMembers(object):
 class MeetupEvents(object):
     '''
         Returns a list of all future meetup events
+
+        Generally Meetups aren't added very often, so we
+        refresh our list once a day.
     '''
 
     def GET(self, cmd):
         logger.debug('GET /meetup/events/%s' % cmd)
-        meetup = MeetupAPI(apikey)
+        meetup = MeetupAPI(apikey, lifetime=86400)
         request = meetup.events({'group_id': cmd, 'page': 20})
 
         try:
@@ -76,8 +82,21 @@ class MeetupRsvp(object):
 
     def GET(self, cmd):
         logger.debug('GET /meetup/rsvp/%s' % cmd)
-        meetup = MeetupAPI(apikey)
-        m1 = MeetupAPI(apikey, 'http://api.meetup.com/')
+
+        '''
+            The first call get a list of all our past meetups. This
+            list expand as meetups complete, so we should refresh it
+            once a day
+        '''
+        meetup = MeetupAPI(apikey, lifetime=86400)
+
+        '''
+            The second meetup instance uses a deprecated API to list
+            the 'attended' counts. This is only available on completed
+            meetups, and is requested per meetup. So it never changes,
+            and we can permanently cache the response.
+        '''
+        m1 = MeetupAPI(apikey, 'http://api.meetup.com/', lifetime=0)
         eventlist = meetup.events({'status': 'past',
                                    'group_id': cmd,
                                    'page': 20})
@@ -94,7 +113,6 @@ class MeetupRsvp(object):
             attendee = None
             eventdate = None
             try:
-                logger.debug('3')
                 name = event['name']
                 count = int(event['yes_rsvp_count'])
                 if count is None:

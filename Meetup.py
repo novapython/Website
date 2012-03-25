@@ -12,7 +12,8 @@ class MeetupAPI(object):
 
     def __init__(self, key,
                  url='http://api.meetup.com/2/',
-                 headers={'content-type': 'application/json'}):
+                 headers={'content-type': 'application/json'},
+                 lifetime=86400):
         self.key = key
         self.url = url
         self.headers = headers
@@ -37,7 +38,10 @@ class MeetupAPI(object):
             meetup_response = json.dumps({'status': r.status_code,
                                           'text': r.text})
             self.cache.set(hash, meetup_response)
-            self.cache.expire(hash, 86400)
+
+            ''' Allow us to have a permanent cached value '''
+            if lifetime > 0:
+                self.cache.expire(hash, lifetime)
         return json.loads(meetup_response)
 
 if __name__ == "__main__":
