@@ -15,7 +15,7 @@ class MeetupMembers(object):
     '''
 
     def GET(self, cmd):
-        logger.debug('GET /meetup/events/%s' % cmd)
+        logger.debug('GET /meetup/members/%s' % cmd)
         decoder = json.JSONDecoder()
         meetup = MeetupAPI(apikey, lifetime=3600)
         response = None
@@ -29,7 +29,7 @@ class MeetupMembers(object):
             logger.debug(request)
             if 'text' in request:
                 text = json.JSONDecoder().decode(request['text'])
-                raise web.HTTPError("%d %s" % (request['status'], text['problem']), {}, f)
+                raise web.HTTPError("%d %s" % (request['status'], text['details']), {}, f)
             raise web.InternalError(e)
         offset = 1
         logger.debug(int(meta['total_count'] / 20.0))
@@ -53,12 +53,18 @@ class MeetupEvents(object):
 
     def GET(self, cmd):
         logger.debug('GET /meetup/events/%s' % cmd)
-        meetup = MeetupAPI(apikey, lifetime=86400)
+        meetup = MeetupAPI(apikey, lifetime=3600)
         request = meetup.events({'group_id': cmd, 'page': 20})
 
         try:
             if request['status'] != 200:
                 text = json.JSONDecoder().decode(request['text'])
+                # Meetup gives us detailed error conditions in most cases
+                # but I've had these fields not present before
+                if 'problem' not in text:
+                    text['problem'] = 'Not specified'
+                if 'details' not in text:
+                    text['details'] = 'Not specified'
                 raise web.HTTPError("%d %s" % (request['status'], text['problem']), {}, text['details'])
         except KeyError, e:
             logger.warning('events failed')
@@ -82,7 +88,7 @@ class MeetupRsvp(object):
 
     def GET(self, cmd):
         logger.debug('GET /meetup/rsvp/%s' % cmd)
-
+        decoder = json.JSONDecoder()
         '''
             The first call get a list of all our past meetups. This
             list expand as meetups complete, so we should refresh it
@@ -97,16 +103,35 @@ class MeetupRsvp(object):
             and we can permanently cache the response.
         '''
         m1 = MeetupAPI(apikey, 'http://api.meetup.com/', lifetime=0)
-        eventlist = meetup.events({'status': 'past',
+        finished = False
+        results = []
+        offset = 0
+
+        while finished is False:
+            eventlist = meetup.events({'status': 'past',
                                    'group_id': cmd,
+                                   'offset': offset,
                                    'page': 20})
-        result = []
-        try:
-            results = json.JSONDecoder().decode(eventlist['text'])['results']
-        except Exception, e:
-            logger.debug(eventlist)
-            text = json.JSONDecoder().decode(eventlist['text'])
-            raise web.HTTPError("%d %s" % (eventlist['status'], text['problem']), {}, text['details'])
+
+            try:
+                results.append(decoder.decode(eventlist['text'])['results'])
+                meta = decoder.decode(eventlist['text'])['meta']
+                count += meta['count']
+                if count == meta['total_count']:
+                    finished = True
+                else:
+                    offset += 1
+            except Exception, e:
+                logger.debug(eventlist)
+                text = decoder.decode(eventlist['text'])
+                # Meetup gives us detailed error conditions in most cases
+                # but I've had these fields not present before
+                if 'problem' not in text:
+                    text['problem'] = 'Not specified'
+                if 'details' not in text:
+                    text['details'] = 'Not specified'
+                raise web.HTTPError("%d %s" % (eventlist['status'], text['problem']), {}, text['details'])
+
         for event in results:
             name = None
             count = None

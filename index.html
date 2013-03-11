@@ -1,117 +1,189 @@
-<!doctype html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Nova Python</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nova Python User Group">
+    <meta name="author" content="Ryan Day">
 
-	<title>NOVA Python</title>
-	<meta name="description" content="NovaPy Users Group">
-	<meta name="author" content="Ryan Day">
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
 
-	<meta name="viewport" content="width=device-width">
+      .txtright {
+          text-align: right;
+      }
 
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/1140.css">
+      .pymenu {
+          background-color: #366d9b;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
 
-<!--	<script src="js/raphael-min.js"></script>
-	<script src="js/popup.js"></script>
-	<script src="js/chart.js"></script>-->
-</head>
-<body>
-<header>
-</header>
-<div role="main" class="container">
-  <div class="row">
-    <div class="onecol">&nbsp;</div>
-  </div>
-  <div class="row">
-    <div class="threecol"></div>
-    <div class="sevencol last">
-      <p class="description">
-        The Northern Virginia Python User Group meets at the VMWare office
-        right off the Dulles Toll Road on the third Thursday of every month.
-        We cover a vast array of python related material, and our members
-        vary from beginning to advanced.
-      </p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="onecol">&nbsp;</div>
-  </div>
-  <div class="row">
-    <div class="fourcol">
-      <span class="title">NOVA Python</span>
-      <span>
-        <a href="http://www.twitter.com/NOVAPython"><img width="20" height="20" src="img/twitter.png"></a>
-      </span>
-      <span>
-        <a href="http://meetup.novapython.org/"><img width="20" height="20" src="img/meetup.png"></a>
-      </span>
-      <p>
-      VMWare<br />
-      5th Floor<br />
-      1902 Campus Commons Dr.<br />
-      Reston, VA 20190<br />
-      </p>
-    </div>
-    <div class="twocol">
-      <p>Upcoming Events</p>
-    </div>
-    <div id="events" class="fourcol last"></div>
-  </div>
-  <div class="row">
-    <div class="fourcol"></div>
-    <div class="threecol">
-      <p>RSVP / Attended Chart</p>
-    </div>
-    <div class="row">
-    <div class="fivecol"></div>
-      <div class="sixcol last">
-        <div id="rsvpchart" style="height:200px"></div>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="pymenu container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <div class="nav-collapse">
+            <ul id="menulist" class="nav">
+              <li><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#events">Upcoming</a></li>
+              <li><a href="#events">Notes</a></li>
+              <li><a href="#stats">Statistics</a></li>
+              <li><a href="http://blog.novapython.org" target="_blank">Blog</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="fourcol"></div>
-    <div class="threecol">
-      <p>Total Members Chart</p>
-    </div>
-    <div class="row">
-    <div class="fivecol"></div>
-      <div class="sixcol last">
-        <div id="totalchart" style="height:200px"></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="fourcol"></div>
-    <div class="threecol">
-      <p>New Member Joins Chart</p>
-    </div>
-    <div class="row">
-    <div class="fivecol"></div>
-      <div class="sixcol last">
-        <div id="memberchart" style="height:200px"></div>
-      </div>
-    </div>
-  </div>
-</div>
-<footer>
 
-</footer>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Sponsors</li>
+              <li>
+                <a href="http://www.excella.com"><img src="img/excella.png"><br/></a>
+              </li>
+              <li><a href="http://vmware.com"><img src="img/vmware.gif"><br/></a></li>
+            </ul>
+          </div><!--/.well -->
+          <div class="well">
+            <ul class="nav nav-list">
+              <li class="nav-header">Contact</li>
+              <li>
+                <a href="http://www.twitter.com/NOVAPython"><img src="img/twitter.png"> &nbsp; @NOVAPython</a>
+              </li>
+              <li>
+                <a href="http://meetup.novapython.org/"><img src="img/meetup.png"> &nbsp; Meetup Page</a>
+              </li>
+            </ul>
+          </div>
+        </div><!--/span-->
+        <div class="span9" style="background:url(img/novapy.png) no-repeat">
+          <div id="main" class="hero-unit txtright" style="">
+            <h5 style="text-transform: uppercase;">Beautiful is better than ugly.<br/>
+Explicit is better than implicit.<br/>
+Simple is better than complex.<br/>
+Complex is better than complicated.<br/>
+Flat is better than nested.<br/>
+Sparse is better than dense.<br/>
+Readability counts.<br/>
+Special cases aren't special enough to break the rules.<br/>
+Although practicality beats purity.<br/>
+Errors should never pass silently.<br/>
+Unless explicitly silenced.<br/>
+In the face of ambiguity, refuse the temptation to guess.<br/>
+There should be one-- and preferably only one --obvious way to do it.<br/>
+Although that way may not be obvious at first unless you're Dutch.<br/>
+Now is better than never.<br/>
+Although never is often better than *right* now.<br/>
+If the implementation is hard to explain, it's a bad idea.<br/>
+If the implementation is easy to explain, it may be a good idea.<br/>
+Namespaces are one honking great idea -- let's do more of those!</h5>
+          </div>
+        <section id="about">
+          <div class="row">
+            <div class="page-header txtright">
+              <h1>About Us</h1>
+            </div>
+            <div class="span8">
+              <p>The Northern Virginia Python User Group meets at the VMWare office right off the <strong>Dulles Toll Road</strong> on the <strong>third Thursday</strong> of every month. We cover a vast array of python related material, and our members vary from beginning to advanced.</p>
+            </div>
+          </div>
+        </section>
+        <section id="upcoming">
+          <div class="row">
+            <div class="page-header txtright">
+              <h1>Upcoming Events</h1>
+            </div>
+            <div class="span8">
+              <p id="events"></p>
+            </div>
+          </div>
+        </section>
+        <section id="notes">
+          <div class="row">
+            <div class="page-header txtright">
+              <h1>Notes</h1>
+            </div>
+            <div class="span8">
+              <p>June 21, 2012 - Novapy AWS</p>
+              <p>You can visit <a href="https://github.com/jrullmann/zombie-weapons">Zombie Weapons</a> to grab the instructions from Jen's presentation. Please verify that the project directory is equal to the git clone directory (both should be zombie_weapons).</p>
+            </div>
+              
+            <div class="span8">
+              <p>March 15, 2012 - VIM and Python, Tips and Tricks</p>
+              <ul>
+                <li><a href="http://www.slideshare.net/majmcdonald/vim-and-python-12038822">http://www.slideshare.net/majmcdonald/vim-and-python-12038822</a></li>
+                <li><a href="https://github.com/mattboehm/dotfiles">https://github.com/mattboehm/dotfiles</a></li>
+                <li><a href="http://www.catonmat.net/blog/why-vim-uses-hjkl-as-arrow-keys">http://www.catonmat.net/blog/why-vim-uses-hjkl-as-arrow-keys/<</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section id="stats">
+          <div class="row">
+            <div class="page-header txtright">
+              <h1>Statistics</h1>
+            </div>
+            <div class="span8">
+              <div id="totalchart" style="height:200px"></div>
+              <div id="memberchart" style="height:200px"></div>
+            </div>
+          </div>
+        </section>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script>
-  window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
-</script>
-<script src="js/plugins.js"></script>
-<script src="js/script.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
-<script>
+        </div>
+      </div><!--/row-->
+    </div>
+
+    <hr>
+
+      <footer>
+        <p>&copy; Nova Python 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.flot.min.js"></script>
+    <script src="js/jquery.flot.resize.min.js"></script>
+    <script type="text/javascript">
+
+ var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28498410-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
     function getSortFn(field) {
         return function(a, b) {
                     return a[field] < b[field] ? -1 : (a[field] > b[field] ? 1 : 0);
@@ -138,20 +210,32 @@
             var x = item.datapoint[0].toFixed(2),
             y = item.datapoint[1].toFixed(2);
 
-            showTooltip(item.pageX, item.pageY, y);
+            showTooltip(item.pageX + 5, item.pageY + 5, y);
         }
         else {
             $("#tooltip").remove();
         }
     }
 
+    function rotateimage() {
+    /*    var list = ['ag.png','matt.png'];
+        var img = Math.floor(Math.random()*list.length);
+        $('#main').css('background', 'url(img/'+list[img]+') no-repeat');
+        */
+    }
+
     $(document).ready(
         function() {
+            setInterval(rotateimage, 5000);
+            $('#menulist').css('margin-left', 
+                ($(document).width()/2) - ($('#menulist').width()/2));
             $.getJSON('/meetup/events/1546792',
                 function(data) {
                     $.each(data.results,
                         function(i, e) {
-                            link = '<p><a href="' + e.event_url + '">' + e.name + ' (' + e.yes_rsvp_count + ' RSVPs)</a></p>';
+                            link = '<p><a href="' + e.event_url + 
+                                    '">' + e.name + ' (' + e.yes_rsvp_count + 
+                                    ' RSVPs)</a></p>';
                             $('#events').append(link);
                         });
                 });
@@ -201,19 +285,21 @@
                             }
                     };
 
-                    $.plot($('#memberchart'), [joins], opts);
-                    $.plot($('#totalchart'), [total], opts);
+                    $.plot($('#memberchart'), [{label: 'Joins', data: joins}], opts);
+                    $.plot($('#totalchart'), [{label: 'Total Members', data: total}], opts);
 
                     $("#memberchart").bind("plothover", tooltipcb);
                     $("#totalchart").bind("plothover", tooltipcb);
             });
-
+/*
             $.getJSON('/meetup/rsvp/1546792',
                 function(data) {
                     var rsvp = [],
                         attn = [],
                         labels = [],
                         x=0;
+
+                    console.log(data);
                     $.each(data,
                         function(i, e) {
                             rsvp.push([x,e.rsvp]);
@@ -239,9 +325,8 @@
                     $("#rsvpchart").bind("plothover", tooltipcb);
                     $.plot($('#rsvpchart'), [{label:'RSVP', data: rsvp},
                                              {label:'Attended', data: attn}], opts);
-                });
-
+                });*/
         });
-</script>
-</body>
+    </script>
+  </body>
 </html>

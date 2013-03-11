@@ -17,7 +17,8 @@ class MeetupAPI(object):
         self.key = key
         self.url = url
         self.headers = headers
-        self.cache = redis.Redis(host='localhost')
+        self.cache = redis.Redis(host='localhost', db=6)
+        self.lifetime = lifetime
 
     def __getattr__(self, name):
 
@@ -40,8 +41,8 @@ class MeetupAPI(object):
             self.cache.set(hash, meetup_response)
 
             ''' Allow us to have a permanent cached value '''
-            if lifetime > 0:
-                self.cache.expire(hash, lifetime)
+            if self.lifetime > 0:
+                self.cache.expire(hash, self.lifetime)
         return json.loads(meetup_response)
 
 if __name__ == "__main__":
