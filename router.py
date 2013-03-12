@@ -1,7 +1,7 @@
 import os
-import sys
 import web
 import site
+from templates import render_template
 
 ''' Find out where we live '''
 abspath = os.path.dirname(__file__)
@@ -13,9 +13,13 @@ urls = (
         '^/events/(.*)$', 'controllers.MeetupEvents',
         '^/rsvp/(.*)$', 'controllers.MeetupRsvp',
         '^/members/(.*)$', 'controllers.MeetupMembers',
+        '/', 'Home',
        )
 
 
+class Home(object):
+    def GET(self):
+        render_template('index.html')
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
