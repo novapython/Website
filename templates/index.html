@@ -161,16 +161,16 @@ Namespaces are one honking great idea -- let's do more of those!</h5>
     <hr>
 
       <footer>
-        <p>&copy; Nova Python 2012</p>
+        <p>&copy; Nova Python 2012-2013</p>
       </footer>
 
     </div><!--/.fluid-container-->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>-->
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/jquery.flot.min.js"></script>
     <script src="/static/js/jquery.flot.resize.min.js"></script>
+    <script src="/static/js/spin.min.js"></script>
     <script type="text/javascript">
 
  var _gaq = _gaq || [];
@@ -225,19 +225,42 @@ Namespaces are one honking great idea -- let's do more of those!</h5>
 
     $(document).ready(
         function() {
-            setInterval(rotateimage, 5000);
+            //setInterval(rotateimage, 5000);
             $('#menulist').css('margin-left', 
                 ($(document).width()/2) - ($('#menulist').width()/2));
+
             $.getJSON('/events/1546792',
-                function(data) {
-                    $.each(data.results,
-                        function(i, e) {
-                            link = '<p><a href="' + e.event_url + 
-                                    '">' + e.name + ' (' + e.yes_rsvp_count + 
-                                    ' RSVPs)</a></p>';
-                            $('#events').append(link);
-                        });
-                });
+                    function(data) {
+                        $.each(data.results,
+                                function(i, e) {
+                                    link = '<p><a href="' + e.event_url +
+                                            '">' + e.name + ' (' + e.yes_rsvp_count +
+                                            ' RSVPs)</a></p>';
+                                    $('#events').append(link);
+                                });
+                    });
+
+            var opts = {
+                lines: 13, // The number of lines to draw
+                length: 7, // The length of each line
+                width: 4, // The line thickness
+                radius: 10, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                color: '#000', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto' // Left position relative to parent in px
+            };
+            var total_chart = document.getElementById('totalchart');
+            var member_chart = document.getElementById('memberchart');
+            var total_spinner = new Spinner(opts).spin(total_chart);
+            var member_spinner = new Spinner(opts).spin(member_chart);
 
             $.getJSON('/members/1546792',
                 function(data) {
@@ -284,6 +307,8 @@ Namespaces are one honking great idea -- let's do more of those!</h5>
                             }
                     };
 
+                    total_spinner.stop();
+                    member_spinner.stop();
                     $.plot($('#memberchart'), [{label: 'Joins', data: joins}], opts);
                     $.plot($('#totalchart'), [{label: 'Total Members', data: total}], opts);
 

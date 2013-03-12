@@ -6,6 +6,7 @@ from Meetup import MeetupAPI
 from novaconfig import apikey, logger
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class MeetupMembers(object):
     '''
