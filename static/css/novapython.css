@@ -1,0 +1,22 @@
+body {
+    padding-top: 60px;
+}
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+.txtright {
+    text-align: right;
+}
+
+.pymenu {
+    background-color: #366d9b;
+}
+
+.pymenu .nav > li > a {
+    color: #fff;
+}
+
+.pymenu .nav > li > a:hover {
+    color: yellow;
+}

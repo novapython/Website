@@ -6,7 +6,7 @@ from Meetup import MeetupAPI
 from novaconfig import apikey, logger
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 class MeetupMembers(object):
     '''
@@ -89,25 +89,27 @@ class MeetupRsvp(object):
     '''
 
     def GET(self, cmd):
-        logger.debug('GET /meetup/rsvp/%s' % cmd)
-        decoder = json.JSONDecoder()
-        '''
+        """
             The first call get a list of all our past meetups. This
             list expand as meetups complete, so we should refresh it
             once a day
-        '''
+        """
+        logger.debug('GET /meetup/rsvp/%s' % cmd)
+        decoder = json.JSONDecoder()
+
         meetup = MeetupAPI(apikey, lifetime=86400)
 
-        '''
+        """
             The second meetup instance uses a deprecated API to list
             the 'attended' counts. This is only available on completed
             meetups, and is requested per meetup. So it never changes,
             and we can permanently cache the response.
-        '''
+        """
         m1 = MeetupAPI(apikey, 'http://api.meetup.com/', lifetime=0)
         finished = False
         results = []
         offset = 0
+        count = 0
 
         while finished is False:
             eventlist = meetup.events({'status': 'past',
@@ -162,9 +164,9 @@ class MeetupRsvp(object):
                 logger.warning('%s' % e)
                 pass
 
-            result.append({'rsvp': count,
+            results.append({'rsvp': count,
                            'attended': attendee,
                            'name': name,
                            'date': eventdate})
 
-        return json.dumps(result)
+        return json.dumps(results)
