@@ -5,6 +5,7 @@ import time
 from Meetup import MeetupAPI
 from novaconfig import apikey, logger
 
+logger = logging.getLogger(__name__)
 
 class MeetupMembers(object):
     '''

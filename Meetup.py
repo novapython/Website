@@ -1,9 +1,10 @@
-import sys
 import requests
 import json
 import hashlib
 import redis
+import logging
 
+logger = logging.getLogger(__name__)
 
 class MeetupAPI(object):
     '''
