@@ -1,5 +1,5 @@
 Nova Python Website
-=================
+===================
 
 This is the http://novapython.org website source code. It is currently running under Apache using WSGI. To setup the VirtualHost under Apache, you should have a config that resembles:
 
