@@ -75,7 +75,7 @@ def _deploy():
                 sudo('mkdir -p /etc/apache2/sites-enabled')
             sudo('mv virtualhost /etc/apache2/sites-enabled/014-novapy')
             sudo('/usr/sbin/apache2ctl restart')
-            sudo('/usr/sbin/service varnishd restart')
+            sudo('/usr/sbin/service varnish restart')
 
 
 def deploy():
