@@ -1,0 +1,19 @@
+<VirtualHost *:8080>
+ServerAdmin ryan@novapython.org
+ServerName www.novapython.org
+ServerAlias novapython.org
+
+DocumentRoot /var/www/novapython
+<Directory /var/www/novapython>
+Order deny,allow
+Allow from all
+</Directory>
+
+WSGIScriptAlias / /var/www/novapython/router.py
+Alias /static /var/www/novapython/static
+
+<Directory /var/www/novapython/static>
+    # directives to effect the static directory
+    Options +Indexes
+</Directory>
+</VirtualHost>
