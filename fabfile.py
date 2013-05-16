@@ -10,7 +10,7 @@ staging_user = 'rday'
 staging_branch = 'staging'
 repository = 'git://github.com/novapython/Website.git'
 
-root_dir = '/var/www/novapython'
+root_dir = '/var/www/novapython/Website'
 code_dir = '%s/src' % root_dir
 virtualenv_dir = '%s/env' % root_dir
 env.activate = 'source %s/bin/activate' % virtualenv_dir
@@ -71,10 +71,10 @@ def _deploy():
             run('pip install -r %s/requirements.txt' % code_dir)
             put('deploy_files/config-%s.py' % env.environment, 'novaconfig.py')
             put('deploy_files/virtualhost-%s' % env.environment, 'virtualhost')
-            if run('test -d /etc/apache/sites-enabled').failed:
-                sudo('mkdir -p /etc/apache/sites-enabled')
-            sudo('mv virtualhost /etc/apache/sites-enabled/014-novapy')
-            sudo('apachectl restart')
+            if run('test -d /etc/apache2/sites-enabled').failed:
+                sudo('mkdir -p /etc/apache2/sites-enabled')
+            sudo('mv virtualhost /etc/apache2/sites-enabled/014-novapy')
+            sudo('apache2ctl restart')
 
 
 def deploy():
