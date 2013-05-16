@@ -3,16 +3,16 @@ ServerAdmin ryan@novapython.org
 ServerName www.novapython.org
 ServerAlias novapython.org
 
-DocumentRoot /var/www/novapython/Website
-<Directory /var/www/novapython/Website>
+DocumentRoot /var/www/novapython/Website/src
+<Directory /var/www/novapython/Website/src>
 Order deny,allow
 Allow from all
 </Directory>
 
-WSGIScriptAlias / /var/www/novapython/Website/router.py
-Alias /static /var/www/novapython/Website/static
+WSGIScriptAlias / /var/www/novapython/Website/src/router.py
+Alias /static /var/www/novapython/Website/src/static
 
-<Directory /var/www/novapython/Website/static>
+<Directory /var/www/novapython/Website/src/static>
     # directives to effect the static directory
     Options +Indexes
 </Directory>
