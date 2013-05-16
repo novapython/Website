@@ -74,7 +74,8 @@ def _deploy():
             if run('test -d /etc/apache2/sites-enabled').failed:
                 sudo('mkdir -p /etc/apache2/sites-enabled')
             sudo('mv virtualhost /etc/apache2/sites-enabled/014-novapy')
-            sudo('apache2ctl restart')
+            sudo('/usr/sbin/apache2ctl restart')
+            sudo('/usr/sbin/service varnishd restart')
 
 
 def deploy():
