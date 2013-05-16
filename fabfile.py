@@ -59,7 +59,7 @@ def _deploy():
         abort('No config file was found!')
     if local('test deploy_files/virtualhost-%s' % env.environment).failed:
         abort('No virtualhost file was found!')
-    sudo('mkdir /var/run/wsgi')
+    sudo('mkdir -p /var/run/wsgi')
 
     with settings(warn_only=True):
         if run('test -d %s' % virtualenv_dir).failed:
